@@ -6,31 +6,28 @@ import org.example.springbootwebmvc_user_andpets.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @Slf4j
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ServerErrorDto> handleValidationException(MethodArgumentNotValidException ex) {
-        log.error("Got validation exception", ex);
+        log.warn("Got validation exception", ex);
 
         String detailedMessage = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(error -> (error.getField() + ": " + error.getDefaultMessage()))
                 .collect(Collectors.joining(","));
+        var errorDto = getErrorDto("Validation Error",
+                detailedMessage);
 
-        var errorDto = new ServerErrorDto(
-                "Validation Error",
-                detailedMessage,
-                LocalDateTime.now()
-        );
         return ResponseEntity.
                 status(HttpStatus.BAD_REQUEST)
                 .body(errorDto);
@@ -38,54 +35,42 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotAllowedEditException.class)
     public ResponseEntity<ServerErrorDto> handleEditingException(NotAllowedEditException ex) {
-        log.error("Got editing exception", ex);
-        var errorDto = new ServerErrorDto(
-                "User editing error",
-                ex.getMessage(),
-                LocalDateTime.now()
-        );
+        log.warn("Got editing exception", ex);
+        var errorDto = getErrorDto("User editing error",
+                ex.getMessage());
         return ResponseEntity.
                 status(HttpStatus.BAD_REQUEST)
                 .body(errorDto);
 
     }
 
-    @ExceptionHandler(RegistryException.class)
-    public ResponseEntity<ServerErrorDto> handleRegistryException(RegistryException ex) {
-        log.error("Got registry exception", ex);
-        var errorDto = new ServerErrorDto(
-                "User registry  error",
-                ex.getMessage(),
-                LocalDateTime.now()
-        );
+    @ExceptionHandler(AlreadyRegisteredException.class)
+    public ResponseEntity<ServerErrorDto> handleRegistryException(AlreadyRegisteredException ex) {
+        log.warn("Got registry exception", ex);
+        var errorDto = getErrorDto("User registry error",
+                ex.getMessage());
         return ResponseEntity.
                 status(HttpStatus.CONFLICT)
                 .body(errorDto);
 
     }
 
-    @ExceptionHandler(NoUserException.class)
-    public ResponseEntity<ServerErrorDto> handleNoUserException(NoUserException ex) {
-        log.error("Got NoUserException", ex);
-        var errorDto = new ServerErrorDto(
-                "User search error",
-                ex.getMessage(),
-                LocalDateTime.now()
-        );
+    @ExceptionHandler(NoFoundUserException.class)
+    public ResponseEntity<ServerErrorDto> handleNoUserException(NoFoundUserException ex) {
+        log.warn("Got NoUserException", ex);
+        var errorDto = getErrorDto("User search error",
+                ex.getMessage());
         return ResponseEntity.
                 status(HttpStatus.NOT_FOUND)
                 .body(errorDto);
 
     }
 
-    @ExceptionHandler(NoPetException.class)
-    public ResponseEntity<ServerErrorDto> handleNoPetException(NoPetException ex) {
-        log.error("Got NoPetException", ex);
-        var errorDto = new ServerErrorDto(
-                "Pet search error",
-                ex.getMessage(),
-                LocalDateTime.now()
-        );
+    @ExceptionHandler(NoFoundPetException.class)
+    public ResponseEntity<ServerErrorDto> handleNoPetException(NoFoundPetException ex) {
+        log.warn("Got NoPetException", ex);
+        var errorDto = getErrorDto("Pet search error",
+                ex.getMessage());
         return ResponseEntity.
                 status(HttpStatus.NOT_FOUND)
                 .body(errorDto);
@@ -94,12 +79,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidPetException.class)
     public ResponseEntity<ServerErrorDto> handleInvalidPetException(InvalidPetException ex) {
-        log.error("Got InvalidPetException", ex);
-        var errorDto = new ServerErrorDto(
-                "Null fields found",
-                ex.getMessage(),
-                LocalDateTime.now()
-        );
+        log.warn("Got InvalidPetException", ex);
+        var errorDto = getErrorDto("Null fields found",
+                ex.getMessage());
+
         return ResponseEntity.
                 status(HttpStatus.BAD_REQUEST)
                 .body(errorDto);
@@ -107,15 +90,48 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NumberFormatException.class)
     public ResponseEntity<ServerErrorDto> handleNumberFormatException(NumberFormatException ex) {
-        log.error("Got NumberFormatException", ex);
-        var errorDto = new ServerErrorDto(
-                "Invalid request params format",
-                ex.getMessage(),
-                LocalDateTime.now()
-        );
+        log.warn("Got NumberFormatException", ex);
+
+        var errorDto = getErrorDto("Invalid request params format"
+                , ex.getMessage());
+
         return ResponseEntity.
                 status(HttpStatus.BAD_REQUEST)
                 .body(errorDto);
     }
 
+    @ExceptionHandler(NoFoundOwnerPetException.class)
+    public ResponseEntity<ServerErrorDto> handleNumberFormatException(NoFoundOwnerPetException ex) {
+        log.warn("Got NoFoundOwnerPetException", ex);
+
+        var errorDto = getErrorDto("Not possible to find owner`s pet"
+                , ex.getMessage());
+
+        return ResponseEntity.
+                status(HttpStatus.BAD_REQUEST)
+                .body(errorDto);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ServerErrorDto> handleNumberFormatException(Exception ex) {
+        log.warn("Got other exception", ex);
+
+        var errorDto = getErrorDto("Exception"
+                , ex.getMessage());
+
+        return ResponseEntity.
+                status(HttpStatus.BAD_REQUEST)
+                .body(errorDto);
+    }
+
+    private ServerErrorDto getErrorDto(
+            String message,
+            String detailedMessage
+    ) {
+        return new ServerErrorDto(
+                message,
+                detailedMessage,
+                LocalDateTime.now()
+        );
+    }
 }

@@ -1,7 +1,8 @@
-package org.example.springbootwebmvc_user_andpets.model;
+package org.example.springbootwebmvc_user_andpets.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.*;
+import org.example.springbootwebmvc_user_andpets.domain.Pet;
 
 import java.util.List;
 

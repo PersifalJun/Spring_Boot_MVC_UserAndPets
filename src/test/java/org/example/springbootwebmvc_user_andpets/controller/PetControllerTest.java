@@ -1,7 +1,8 @@
 package org.example.springbootwebmvc_user_andpets.controller;
 
-import org.example.springbootwebmvc_user_andpets.model.PetDto;
-import org.example.springbootwebmvc_user_andpets.model.UserDto;
+import org.example.springbootwebmvc_user_andpets.domain.Pet;
+import org.example.springbootwebmvc_user_andpets.domain.User;
+import org.example.springbootwebmvc_user_andpets.dto.PetDto;
 import org.example.springbootwebmvc_user_andpets.service.PetService;
 import org.example.springbootwebmvc_user_andpets.service.UserService;
 import org.junit.jupiter.api.Assertions;
@@ -33,7 +34,7 @@ class PetControllerTest {
 
     @Test
     void shouldSuccessCreatePet() throws Exception {
-        var user = new UserDto(
+        var user = new User(
                 null,
                 "test-user",
                 "test-user@example.com",
@@ -69,16 +70,16 @@ class PetControllerTest {
 
     @Test
     void shouldSuccessDeletePet() throws Exception {
-        var user = new UserDto(
+        var user = new User(
                 null,
                 "test-user",
-                "test-user@example.com",
+                "test-user1@example.com",
                 30,
                 new ArrayList<>()
         );
         user = userService.createUser(user);
 
-        var pet = new PetDto(
+        var pet = new Pet(
                 null,
                 "test-pet",
                 null
@@ -90,7 +91,7 @@ class PetControllerTest {
 
         var updatedUser = userService.getById(user.id());
         org.assertj.core.api.Assertions.assertThat(updatedUser.pets())
-                .extracting(PetDto::id)
+                .extracting(Pet::id)
                 .doesNotContain(pet.id());
     }
 

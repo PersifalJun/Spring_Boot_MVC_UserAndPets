@@ -1,6 +1,8 @@
 package org.example.springbootwebmvc_user_andpets.controller;
 
-import org.example.springbootwebmvc_user_andpets.model.UserDto;
+import org.example.springbootwebmvc_user_andpets.converter.UserDtoConverter;
+import org.example.springbootwebmvc_user_andpets.domain.User;
+import org.example.springbootwebmvc_user_andpets.dto.UserDto;
 import org.example.springbootwebmvc_user_andpets.repository.UserRepository;
 import org.example.springbootwebmvc_user_andpets.service.UserService;
 import org.junit.jupiter.api.Assertions;
@@ -33,6 +35,8 @@ class UserControllerTest {
     private UserRepository userRepository;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private UserDtoConverter userDtoConverter;
 
     @BeforeEach
     void setUp() {
@@ -41,14 +45,14 @@ class UserControllerTest {
 
     @Test
     void shouldSuccessGetAllUsers() throws Exception {
-        var user1 = new UserDto(
+        var user1 = new User(
                 null,
                 "test-user1",
                 "test-user1@example.com",
                 40,
                 new ArrayList<>()
         );
-        var user2 = new UserDto(
+        var user2 = new User(
                 null,
                 "test-user2",
                 "test-user2@example.com",
@@ -77,7 +81,7 @@ class UserControllerTest {
 
     @Test
     void shouldSuccessSearchUserById() throws Exception {
-        var user = new UserDto(
+        var user = new User(
                 null,
                 "test-user",
                 "test-user@example.com",
@@ -85,8 +89,8 @@ class UserControllerTest {
                 new ArrayList<>()
         );
         user = userService.createUser(user);
-
-        String foundUserJson = mockMvc.perform(get("/users/{id}", user.id()))
+        var userDto = userDtoConverter.toUserDto(user);
+        String foundUserJson = mockMvc.perform(get("/users/{id}", userDto.id()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
