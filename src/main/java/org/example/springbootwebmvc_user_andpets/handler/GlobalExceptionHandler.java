@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotAllowedEditException.class)
     public ResponseEntity<ServerErrorDto> handleEditingException(NotAllowedEditException ex) {
-        log.warn("Got editing exception", ex);
+        log.error("Got editing exception", ex);
         var errorDto = getErrorDto("User editing error",
                 ex.getMessage());
         return ResponseEntity.
@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AlreadyRegisteredException.class)
     public ResponseEntity<ServerErrorDto> handleRegistryException(AlreadyRegisteredException ex) {
-        log.warn("Got registry exception", ex);
+        log.error("Got registry exception", ex);
         var errorDto = getErrorDto("User registry error",
                 ex.getMessage());
         return ResponseEntity.
@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoFoundUserException.class)
     public ResponseEntity<ServerErrorDto> handleNoUserException(NoFoundUserException ex) {
-        log.warn("Got NoUserException", ex);
+        log.error("Got NoUserException", ex);
         var errorDto = getErrorDto("User search error",
                 ex.getMessage());
         return ResponseEntity.
@@ -68,7 +68,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoFoundPetException.class)
     public ResponseEntity<ServerErrorDto> handleNoPetException(NoFoundPetException ex) {
-        log.warn("Got NoPetException", ex);
+        log.error("Got NoPetException", ex);
         var errorDto = getErrorDto("Pet search error",
                 ex.getMessage());
         return ResponseEntity.
@@ -79,7 +79,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidPetException.class)
     public ResponseEntity<ServerErrorDto> handleInvalidPetException(InvalidPetException ex) {
-        log.warn("Got InvalidPetException", ex);
+        log.error("Got InvalidPetException", ex);
         var errorDto = getErrorDto("Null fields found",
                 ex.getMessage());
 
@@ -90,7 +90,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NumberFormatException.class)
     public ResponseEntity<ServerErrorDto> handleNumberFormatException(NumberFormatException ex) {
-        log.warn("Got NumberFormatException", ex);
+        log.error("Got NumberFormatException", ex);
 
         var errorDto = getErrorDto("Invalid request params format"
                 , ex.getMessage());
@@ -102,7 +102,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoFoundOwnerPetException.class)
     public ResponseEntity<ServerErrorDto> handleNumberFormatException(NoFoundOwnerPetException ex) {
-        log.warn("Got NoFoundOwnerPetException", ex);
+        log.error("Got NoFoundOwnerPetException", ex);
 
         var errorDto = getErrorDto("Not possible to find owner`s pet"
                 , ex.getMessage());
@@ -114,7 +114,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ServerErrorDto> handleNumberFormatException(Exception ex) {
-        log.warn("Got other exception", ex);
+        log.error("Got other exception", ex);
 
         var errorDto = getErrorDto("Exception"
                 , ex.getMessage());

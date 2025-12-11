@@ -64,7 +64,7 @@ public class UserService {
         log.info("Deleting a user");
         var userToDelete = userRepository.findById(userId)
                 .orElseThrow(() -> {
-                    log.warn("No possible to find user to delete");
+                    log.error("No possible to find user to delete");
                     return new NoFoundUserException("No found user by id = %s".formatted(userId));
                 });
         userRepository.delete(userToDelete);
@@ -73,12 +73,12 @@ public class UserService {
     public User updateUser(Long userId, User userToUpdate) {
         var previousUserVersion = userRepository.findById(userId)
                 .orElseThrow(() -> {
-                    log.warn("No possible to find user to update");
+                    log.error("No possible to find user to update");
                     return new NoFoundUserException("No found user by id = %s".formatted(userId));
                 });
         log.info("Checking lists for previous version user and new user");
         if (!arePetsListsSame(previousUserVersion.pets(), userToUpdate.pets())) {
-            log.warn("No possible to update pets using /users/{id} endpoint");
+            log.error("No possible to update pets using /users/{id} endpoint");
             throw new NotAllowedEditException(
                     "Pets cannot be updated via /users endpoint. " +
                             "Use /users/{id}/pets endpoints to manage pets."
@@ -111,7 +111,7 @@ public class UserService {
     public User getById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> {
-                    log.warn("No possible to find user");
+                    log.error("No possible to find user");
                     return new NoFoundUserException("No found user by id = %s".formatted(userId));
                 });
     }
@@ -119,7 +119,7 @@ public class UserService {
     private boolean isRegistered(String email) {
         if (userRepository.getUsers().stream().
                 filter(Objects::nonNull).anyMatch(user -> email.equals(user.email()))) {
-            log.warn("This user has already registered");
+            log.error("This user has already registered");
             throw new AlreadyRegisteredException("User with this email is already exists");
         }
         return false;
@@ -134,6 +134,7 @@ public class UserService {
             Pet newPet = incomingPets.get(i);
 
             if (isNull(newPet.id()) || isNull(newPet.userId())) {
+                log.error("Pet id and userId are null");
                 throw new InvalidPetException("Pet id and userId are necessary");
             }
             if (!Objects.equals(oldPet.id(), newPet.id())) return false;

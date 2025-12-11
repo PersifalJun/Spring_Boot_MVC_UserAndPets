@@ -31,7 +31,7 @@ public class PetService {
     public Pet createPet(Long ownerId, Pet petToCreate) {
         var owner = userRepository.findById(ownerId)
                 .orElseThrow(() -> {
-                    log.warn("No possible to find pet owner to create pet");
+                    log.error("No possible to find pet owner to create pet");
                     return new NoFoundUserException(
                             "User with id=%s not found".formatted(ownerId));
                 });
@@ -51,20 +51,20 @@ public class PetService {
     public void deletePet(Long ownerId, Long petId) {
         var owner = userRepository.findById(ownerId)
                 .orElseThrow(() -> {
-                    log.warn("No possible to find pet owner to delete pet");
+                    log.error("No possible to find pet owner to delete pet");
                     return new NoFoundUserException(
                             "User with id=%s not found".formatted(ownerId));
                 });
 
         var petToDelete = petRepository.findById(petId)
                 .orElseThrow(() -> {
-                    log.warn("No possible to find pet");
+                    log.error("No possible to find pet");
                     return new NoFoundPetException(
                             "No pet found by id = %s".formatted(petId));
                 });
 
         if (!Objects.equals(petToDelete.userId(), ownerId)) {
-            log.warn("No possible to find owner's pet");
+            log.error("No possible to find owner's pet");
             throw new NoFoundOwnerPetException((
                     "Pet with id = %s doesn't belong to user with id = %s"
                             .formatted(petId, ownerId)));
