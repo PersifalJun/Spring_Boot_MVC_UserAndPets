@@ -48,7 +48,7 @@ public class UserController {
     public ResponseEntity<UserDto> createUser(
             @RequestBody @Valid UserDto userFromRequest
     ) {
-        log.info("Get request for create user: user={}", userFromRequest);
+        log.info("Post request for create user: user={}", userFromRequest);
         var createdUser = userService.createUser(
                 userDtoConverter.toDomain(userFromRequest));
         return ResponseEntity
